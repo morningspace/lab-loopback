@@ -1,0 +1,182 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <title>Nodejs应用开发新秀 —— 深入浅出LoopBack</title>
+
+    <link rel="stylesheet" href="css/reveal.css">
+    <link rel="stylesheet" href="css/theme/black.css">
+
+    <!-- Theme used for syntax highlighting of code -->
+    <link rel="stylesheet" href="lib/css/zenburn.css">
+
+    <!-- Printing and PDF exports -->
+    <script>
+        var link = document.createElement('link');
+        link.rel = 'stylesheet';
+        link.type = 'text/css';
+        link.href = window.location.search.match(/print-pdf/gi) ? 'css/print/pdf.css' : 'css/print/paper.css';
+        document.getElementsByTagName('head')[0].appendChild(link);
+    </script>
+</head>
+
+<body>
+    <div class="reveal">
+        <div class="slides">
+            <section>
+                <section data-markdown>
+                    ## 第一幕
+                    ### 我们的第一个应用
+                    #### —— 初尝LoopBack的应用开发
+                    演讲者：莫映
+
+                    2018年3月
+                </section>
+                <section data-markdown>
+                    ## 我是谁？
+                </section>
+                <section data-markdown>
+                    ## 我们将了解到什么？
+                    * 什么是LoopBack？
+                    * 为什么选择LoopBack？
+                    * 如何使用LoopBack？
+                    * 哪里能获得更多资源？
+                </section>
+            </section>
+            <section>
+                <section data-markdown>
+                    ## 什么是LoopBack？
+                </section>
+                <section data-markdown>
+                    LoopBack是一个高度可扩展的开源Node.js框架
+
+                    ![](images/loopback-concept.jpg)
+                </section>
+                <section>
+                    <image src="images/loopback-modules.png" style="width:500pt;border:0" />
+                </section>
+                <section data-markdown>
+                    ## LoopBack小传
+                    * 2012年底，成立于旧金山湾区
+                    * 2013年3月，发布定位企业应用开发的Node.js开源框架：LoopBack
+                    * 以及用于创建，运行，管理，监控LoopBack应用的图形化工具：StrongLoop Arc
+                    * 2015年9月，IBM收购了StrongLoop
+                    * 数月后，基于IBM Cloud的API全生命周期管理软件诞生：API Connect
+                </section>
+            </section>
+            <section>
+                <section data-markdown>
+                    ## 为什么选择LoopBack？
+                </section>
+                <section data-markdown>
+                    ## 和其他框架的对比
+|								|LoopBack				|Express							|Sails							|Meteor
+| ----					|:----					|:----								|:----							|:----
+|Type						|API Framework	|HTTP Server Library	|Web MVC Framework	|Full-stack JS platform
+|Client					|Yes 						|None									|None								|Yes
+|API Definition	|Yes 						|None									|None								|Yes
+|Data Source 		|Yes 						|None									|Yes								|Yes
+参见：http://loopback.io/resources/#compare
+                </section>
+                <section data-markdown>
+                    ## 谁使用了LoopBack
+                    ![](images/who-use-loopback.png)
+                </section>
+            </section>
+            <section>
+                <section data-markdown>
+                    ## 如何使用LoopBack
+                </section>
+                <section data-markdown>
+                    ## 典型步骤
+                    1. 安装命令行工具
+                    2. 创建应用框架代码
+                    3. 为应用定义模型
+                    4. 运行应用程序
+                    5. 访问API Explorer
+
+
+                        # install
+                        $ npm install -g loopback-cli
+                        # create app
+                        $ lb
+                        # create models
+                        $ lb model
+                        # run the application
+                        $ node .
+                </section>
+                <section data-markdown>
+                    ## 演示时间：TaskMe
+                </section>
+                <section data-markdown>
+                    ## 什么是TaskMe
+                    * 一个管理个人任务的应用
+                    * 支持任务的定义，修改，和删除
+                    * 以及其他功能（随本课程后续情节的发展逐步增加）
+                    * 麻雀虽小五脏俱全
+                </section>
+                <section data-markdown>
+                    ## 任务清单
+                    * 生成TaskMe的代码框架
+                    * 运行应用程序并学习使用API Explorer
+                </section>
+            </section>
+            <section>
+                <section data-markdown>
+                    ## 哪里能获得更多资源？
+                </section>
+                <section data-markdown>
+                    * LoopBack源码: https://github.com/strongloop/loopback
+                    * LoopBack快速上手教程: http://loopback.io/doc/en/lb3/Getting-started-with-LoopBack.html
+                    * LoopBack在线文档: http://loopback.io/doc/
+                    * API参考文档: http://apidocs.strongloop.com/
+                    * Stackoverflow上的LoopBack讨论: https://stackoverflow.com/questions/tagged/loopbackjs
+                    * API Connect: https://developer.ibm.com/apiconnect/
+                    * StrongLoop官方博客: https://strongloop.com/strongblog/tag_LoopBack.html
+                    * 本讲座资源：[全部幻灯及示例源码](https://github.com/morningspace/understanding-loopback)
+                </section>
+            </section>
+            <section>
+                <section data-markdown>
+                    ## 敬请期待
+                    ### 下一幕精彩内容 ☻
+                </section>
+            </section>
+        </div>
+    </div>
+
+    <script src="lib/js/head.min.js"></script>
+    <script src="js/reveal.js"></script>
+
+    <script>
+        // More info https://github.com/hakimel/reveal.js#configuration
+        Reveal.initialize({
+            history: true,
+            transition: 'convex',
+
+            // More info https://github.com/hakimel/reveal.js#dependencies
+            dependencies: [{
+                src: 'plugin/markdown/marked.js'
+            }, {
+                src: 'plugin/markdown/markdown.js'
+            }, {
+                src: 'plugin/notes/notes.js',
+                async: true
+            }, {
+                src: 'plugin/highlight/highlight.js',
+                async: true,
+                callback: function() {
+                    hljs.initHighlightingOnLoad();
+                }
+            }, {
+                src: 'plugin/zoom-js/zoom.js',
+                async: true
+            }]
+        });
+    </script>
+</body>
+
+</html>

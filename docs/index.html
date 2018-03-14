@@ -1,0 +1,88 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <title>Nodejs应用开发新秀 —— 深入浅出LoopBack</title>
+
+    <link rel="stylesheet" href="css/reveal.css">
+    <link rel="stylesheet" href="css/theme/black.css">
+
+    <!-- Theme used for syntax highlighting of code -->
+    <link rel="stylesheet" href="lib/css/zenburn.css">
+
+    <!-- Printing and PDF exports -->
+    <script>
+        var link = document.createElement('link');
+        link.rel = 'stylesheet';
+        link.type = 'text/css';
+        link.href = window.location.search.match(/print-pdf/gi) ? 'css/print/pdf.css' : 'css/print/paper.css';
+        document.getElementsByTagName('head')[0].appendChild(link);
+    </script>
+</head>
+
+<body>
+    <div class="reveal">
+        <div class="slides">
+            <section>
+                <section>
+                    <h2>Nodejs应用开发新秀</h2>
+                    <h3>—— 深入浅出LoopBack</h3>
+                    <image src="images/loopback.svg" style="width:100pt;border:0" />
+                    <p>
+                        <small>
+                          Designed by Mo Ying
+                          <br/>
+                          <br/>
+                          March, 2018
+                        </small>
+                    </p>
+                </section>
+                <section data-markdown>
+                    ## 我们要谈些什么？                  
+| 日期		  | 内容 
+| ---- 		|:----
+| 3/22		| [我们的第一个应用：初尝LoopBack的应用开发](episode-1.html)
+| 3/29		| 进入MODEL的世界：理解LoopBack的核心概念
+| 4/12		| 威力无比的百宝箱：扩展LoopBack的应用逻辑
+| 4/19		| 缤纷多彩的数据源：打开LoopBack的数据之窗
+| 4/26		| 内幕劲爆的最终章：深入LoopBack的方方面面
+                </section>
+            </section>
+        </div>
+    </div>
+
+    <script src="lib/js/head.min.js"></script>
+    <script src="js/reveal.js"></script>
+
+    <script>
+        // More info https://github.com/hakimel/reveal.js#configuration
+        Reveal.initialize({
+            history: true,
+            transition: 'convex',
+
+            // More info https://github.com/hakimel/reveal.js#dependencies
+            dependencies: [{
+                src: 'plugin/markdown/marked.js'
+            }, {
+                src: 'plugin/markdown/markdown.js'
+            }, {
+                src: 'plugin/notes/notes.js',
+                async: true
+            }, {
+                src: 'plugin/highlight/highlight.js',
+                async: true,
+                callback: function() {
+                    hljs.initHighlightingOnLoad();
+                }
+            }, {
+                src: 'plugin/zoom-js/zoom.js',
+                async: true
+            }]
+        });
+    </script>
+</body>
+
+</html>

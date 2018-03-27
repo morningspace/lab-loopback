@@ -1,0 +1,204 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <title>Nodejs应用开发新秀 —— 深入浅出LoopBack</title>
+
+    <link rel="stylesheet" href="css/reveal.css">
+    <link rel="stylesheet" href="css/theme/black.css">
+
+    <!-- Theme used for syntax highlighting of code -->
+    <link rel="stylesheet" href="lib/css/zenburn.css">
+
+    <!-- Printing and PDF exports -->
+    <script>
+        var link = document.createElement('link');
+        link.rel = 'stylesheet';
+        link.type = 'text/css';
+        link.href = window.location.search.match(/print-pdf/gi) ? 'css/print/pdf.css' : 'css/print/paper.css';
+        document.getElementsByTagName('head')[0].appendChild(link);
+    </script>
+</head>
+
+<body>
+    <div class="reveal">
+        <div class="slides">
+            <section>
+                <section data-markdown>
+                    ## 第二幕
+                    ### 进入Model的世界
+                    #### —— 理解LoopBack的核心概念
+                    演讲者：xxx
+
+                    2018年3月
+                </section>
+                <section data-markdown>
+                    ## 我是谁？
+                </section>
+                <section data-markdown>
+                    ## 我们将了解到什么？
+                    * 什么是Model？
+                    * 如何定义Model？
+                    * 如何定制Model？
+                    * 如何验证Model？
+                    * 如何为Model建立关联？
+                </section>
+            </section>
+            <section>
+                <section data-markdown>
+                    ## 什么是Model？
+                </section>
+                <section data-markdown>
+                  * 一个JavaScript对象
+                  * 代表后端数据源
+                  * 提供Node和REST的API接口
+                  * 可以通过添加钩子（hook）扩展业务逻辑
+                  * 支持数据验证
+                  * 允许继承，或与其他Model建立关联
+                </section>
+            </section>
+            <section>
+                <section data-markdown>
+                    ## 如何定义Model？
+                </section>
+                <section data-markdown>
+                  * 使用model generator
+                  * 使用model discovery（用于已有的关系型数据库）
+                  * 使用instance introspection（用于存储非结构化数据的NoSQL数据库或REST APIs）
+                  * 手工定义Model
+                </section>
+                <section data-markdown>
+                    ## 使用model generator
+                    
+                          # 用于生成Model
+                          $lb model <model-name>
+                        
+                          # 用于为Model添加属性
+                          $lb property
+                </section>
+                <section data-markdown>
+                    ## 与Model相关的几个文件
+                    * myModel.json，JSON定义文件
+                    * myModel.js，扩展Model的应用逻辑
+                    * model-config.json，配置Model并指定数据源
+                </section>
+                <section data-markdown>
+                    ## 演示时间：☑︎ TaskMe
+                </section>
+                <section data-markdown>
+                    ## ☑︎ 任务清单
+                    * 查看并理解Task Model的定义
+                    * 修改model-config.json，只为Task暴露我们所期望的REST API
+                    * 添加Note Model
+                </section>
+            </section>
+            <section>
+                <section data-markdown>
+                    ## 如何定制Model？
+                </section>
+                <section data-markdown>
+                  * 修改Model定义文件，以对Model的定义进行定制
+                  * 通过现有Model派生，以定义新的Model
+                  * 编辑Model的JavaScript文件，以对逻辑进行定制
+                </section>
+                <section data-markdown>
+                    ## 演示时间：☑︎ TaskMe
+                </section>
+                <section data-markdown>
+                    ## ☑︎ 任务清单
+                    * 修改Task Model的定义，如：为Task增加state属性
+                    * 增加SharableTask，令其派生自Task
+                    * 为Task Model增加业务逻辑，如：在持久化之前将title属性转换成大写
+                </section>
+            </section>
+            <section>
+                <section data-markdown>
+                    ## 如何验证Model？
+                </section>
+                <section data-markdown>
+                    ## validation方法
+                    调用isValid()或新增Model与更新Model时触发：
+                    * validatesAbsenceOf
+                    * validatesExclusionOf
+                    * validatesFormatOf
+                    * validatesInclusionOf
+                    * validatesLengthOf
+                    * validatesNumericalityOf
+                    * validatesPresenceOf
+                    * validatesUniquenessOf
+                    * validatesDateOf
+                </section>
+                <section data-markdown>
+                    ## 演示时间：☑︎ TaskMe
+                </section>
+                <section data-markdown>
+                    ## ☑︎ 任务清单
+                    * 为Task Model增加验证逻辑
+                </section>
+            </section>
+            <section>
+                <section data-markdown>
+                    ## 如何为Model建立关联？
+                </section>
+                <section data-markdown>
+                    ## Model的关联关系
+                    * BelongsTo
+                    * HasOne
+                    * HasMany
+                    * HasManyThrough
+                    * HasAndBelongsToMany
+                    * Polymorphic
+                    * Embedded（embedsOne与embedsMany）
+                </section>
+                <section data-markdown>
+                    ## 演示时间：☑︎ TaskMe
+                </section>
+                <section data-markdown>
+                    ## ☑︎ 任务清单
+                    * 为Task Model和Note Model建立关联
+                </section>
+            </section>
+            <section>
+                <section data-markdown>
+                    ## 敬请期待
+                    ### 下一幕精彩内容 ☻
+                </section>
+            </section>
+        </div>
+    </div>
+
+    <script src="lib/js/head.min.js"></script>
+    <script src="js/reveal.js"></script>
+
+    <script>
+        // More info https://github.com/hakimel/reveal.js#configuration
+        Reveal.initialize({
+            history: true,
+            transition: 'convex',
+
+            // More info https://github.com/hakimel/reveal.js#dependencies
+            dependencies: [{
+                src: 'plugin/markdown/marked.js'
+            }, {
+                src: 'plugin/markdown/markdown.js'
+            }, {
+                src: 'plugin/notes/notes.js',
+                async: true
+            }, {
+                src: 'plugin/highlight/highlight.js',
+                async: true,
+                callback: function() {
+                    hljs.initHighlightingOnLoad();
+                }
+            }, {
+                src: 'plugin/zoom-js/zoom.js',
+                async: true
+            }]
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,282 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <title>Nodejs应用开发新秀 —— 深入浅出LoopBack</title>
+
+    <link rel="stylesheet" href="css/reveal.css">
+    <link rel="stylesheet" href="css/theme/black.css">
+
+    <!-- Theme used for syntax highlighting of code -->
+    <link rel="stylesheet" href="lib/css/zenburn.css">
+
+    <!-- Printing and PDF exports -->
+    <script>
+        var link = document.createElement('link');
+        link.rel = 'stylesheet';
+        link.type = 'text/css';
+        link.href = window.location.search.match(/print-pdf/gi) ? 'css/print/pdf.css' : 'css/print/paper.css';
+        document.getElementsByTagName('head')[0].appendChild(link);
+    </script>
+</head>
+
+<body>
+    <div class="reveal">
+        <div class="slides">
+            <section>
+                <section data-markdown>
+                    ## 第三幕
+                    ### 威力无比的百宝箱
+                    #### —— 扩展LoopBack的应用逻辑
+                    主讲人：胡晟
+
+                    2018年4月
+                </section>
+                <section data-markdown>
+                    ## 我是谁？
+                </section>
+                <section data-markdown>
+                    ## 我们将了解到什么？
+                    * 如何通过remote method定义REST APIs？
+                    * 如何通过mixin定制Model的行为？
+                    * 如何定义middleware？
+                    * 如何利用hook扩展Model的应用逻辑？
+                    * 如何利用boot scripts在应用启动阶段加入定制逻辑？
+                </section>
+            </section>
+            <section>
+                <section data-markdown>
+                    ## 通过remote method
+                    ## 定义REST APIs
+                </section>
+                <section data-markdown>
+                    ## 关于remote method
+                    * Remote method是Model的一个方法，且被自动暴露为REST API。
+                    * Model有一组默认的remote method。
+                </section>
+                <section data-markdown>
+                    ## 注册remote method的方法
+                    * 在Model定义文件中手工注册
+                    * 在Model扩展文件中调用remoteMethod()手工注册
+                    * 使用命令行工具remote method generator
+                </section>
+                <section data-markdown>
+                    ## 演示时间：☑︎ TaskMe
+                </section>
+                <section data-markdown>
+                    ## ☑︎ 任务清单
+                    * 为Task定义一个新的remote method：getList()
+                </section>
+            </section>
+            <section>
+                <section data-markdown>
+                    ## 通过mixin定制Model的行为
+                </section>
+                <section data-markdown>
+                    ## 关于mixin
+                    * 利用mixin可以将某些公共逻辑应用于多个Model
+                    * LoopBack提供某些内建mixin，如：Inclusion，Validateable，RelationMixin
+                </section>
+                <section data-markdown>
+                    ## 如何定义mixin
+                    * 将mixin代码文件放在model-config.js的mixins属性所定义的位置
+                    * 在Model定义文件中配置mixin
+                    
+                    
+                          // my-mixin.js
+                          module.exports = (Model, options) => {
+                            // Model is the model class
+                            // options is an object containing
+                            // the config properties from model definition
+                          };
+
+                          // model-name.json
+                          "mixins": {
+                            "MyMixin": {
+                              "oneOption": "blabla...",
+                              "anotherOption": true
+                            }
+                          }
+                </section>
+                <section data-markdown>
+                    ## 演示时间：☑︎ TaskMe
+                </section>
+                <section data-markdown>
+                    ## ☑︎ 任务清单
+                    * 为Task定义一个mixin：自动添加日期类型的属性
+                </section>
+            </section>
+            <section>
+                <section data-markdown>
+                    ## 定义middleware
+                </section>
+                <section data-markdown>
+                    ## 关于middleware
+                    * Middleware的各个阶段
+                      * initial：middleware执行的初始阶段
+                      * session：准备session对象的阶段
+                      * auth：处理认证与授权的阶段
+                      * parse：解析HTTP请求的阶段
+                      * routes：用于实现HTTP route的应用逻辑
+                      * files：处理服务器静态资源
+                      * final：错误处理阶段
+                    * 每个阶段还有“before”和“after”两个子阶段，如：initial:before，initial，initial:after
+                    * 我们还可以自定义阶段
+                </section>
+                <section data-markdown>
+                    ## 如何定义middleware
+                    * 定义一个能够返回middleware函数的构造函数
+                    * 在middleware.json中注册该middleware
+
+
+                          module.exports = {
+                            // Regular middleware
+                            myMiddleware() {
+                              return (req, res, next) => {
+                                // ...
+                              }
+                            },
+                            
+                            // Error handler middleware
+                            myErrorHandler() {
+                              return (err, req, res, next) => {
+                                // ...
+                              }
+                            },
+                          };
+                </section>
+                <section data-markdown>
+                    ## 演示时间：☑︎ TaskMe
+                </section>
+                <section data-markdown>
+                    ## ☑︎ 任务清单
+                    * 为Task添加一个简单的middleware，用于模拟认证检查
+                </section>
+            </section>
+            <section>
+                <section data-markdown>
+                    ## 利用hook扩展Model的应用逻辑
+                </section>
+                <section data-markdown>
+                    ## 关于hook
+                    * Remote hook，在remote method执行前后被调用
+                    * Operation hook，在Model执行CRUD操作前后被调用，不绑定于某个特定的Model方法
+                    * Connector hook，在请求数据源连接器之前，或其返回后被调用
+                </section>
+                <section data-markdown>
+                    ## Remote hook
+                    * 种类：beforeRemote，afterRemote，afterRemoteError
+                    * 用法：
+
+
+                          model.beforeRemote(method, function(ctx, next) {
+                            //...
+                            next();
+                          });
+
+                          // For instance methods and static built-in methods
+                          model.beforeRemote(method, function(ctx, modelInstance, next) {
+                            //...
+                            next();
+                          });
+
+                    * 通配符，如：'__*__'(匹配任意字符直至遇到'.')，'__**__'(匹配任意字符包括'.')，'__prototype.*__'(匹配任意实例方法)
+                </section>
+                <section data-markdown>
+                    ## Operation hook
+                    * 种类：access，before save，after save，before delete，after delete，loaded，persisted
+                    * 用法：
+
+
+                          Model.observe('after save', function(ctx, next) {
+                            console.log('supports isNewInstance?', ctx.isNewInstance !== undefined);
+                            next();
+                          });
+                          
+                          Model.updateOrCreate({
+                            id: 123
+                          }, cb);
+                </section>
+                <section data-markdown>
+                    ## 演示时间：☑︎ TaskMe
+                </section>
+                <section data-markdown>
+                    ## ☑︎ 任务清单
+                    * 查看并学习timestamp这一Mixin中所采用的operation hook
+                </section>
+            </section>
+            <section>
+                <section data-markdown>
+                    ## 利用boot scripts定制初始化逻辑
+                </section>
+                <section data-markdown>
+                    ## 关于boot scripts
+                    * LoopBack bootstrapper用于应用服务的初始化，如：定义Model，配置数据源，为应用服务设置参数
+                    * Boot scripts用于定制初始化逻辑，默认位于/server/boot目录下
+                    * 可以使用boot script generator自动生成，或手工创建boot script
+                    * 同步执行的boot script与异步执行的boot script
+                    
+                    
+                          // Synchronous boot script template
+                          module.exports = function(app) {};
+                          
+                          // Asynchronous boot script template
+                          module.exports = function(app, cb) {
+                            // Remove if you pass `cb` to an async function yourself
+                            process.nextTick(cb);
+                          };
+
+                </section>
+                <section data-markdown>
+                    ## 演示时间：☑︎ TaskMe
+                </section>
+                <section data-markdown>
+                    ## ☑︎ 任务清单
+                    * 查看并学习LoopBack默认生成的名为root.js的boot script
+                    * 在初始化阶段为Task Model添加一个Remote hook
+                </section>
+            </section>
+            <section>
+                <section data-markdown>
+                    ## 敬请期待
+                    ### 下一幕精彩内容 ☻
+                </section>
+            </section>
+        </div>
+    </div>
+
+    <script src="lib/js/head.min.js"></script>
+    <script src="js/reveal.js"></script>
+
+    <script>
+        // More info https://github.com/hakimel/reveal.js#configuration
+        Reveal.initialize({
+            history: true,
+            transition: 'convex',
+
+            // More info https://github.com/hakimel/reveal.js#dependencies
+            dependencies: [{
+                src: 'plugin/markdown/marked.js'
+            }, {
+                src: 'plugin/markdown/markdown.js'
+            }, {
+                src: 'plugin/notes/notes.js',
+                async: true
+            }, {
+                src: 'plugin/highlight/highlight.js',
+                async: true,
+                callback: function() {
+                    hljs.initHighlightingOnLoad();
+                }
+            }, {
+                src: 'plugin/zoom-js/zoom.js',
+                async: true
+            }]
+        });
+    </script>
+</body>
+
+</html>

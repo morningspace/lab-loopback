@@ -1,0 +1,20 @@
+{
+  "name": "SharableTask",
+  "plural": "sharable-tasks",
+  "base": "Task",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "sharedWith": {
+      "type": [
+        "string"
+      ]
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [],
+  "methods": {}
+}

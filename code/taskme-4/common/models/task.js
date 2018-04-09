@@ -36,7 +36,7 @@ module.exports = function(Task) {
     if (order) {
       query.order = [];
       order.split(',').forEach(function(item) {
-        order.push(item);
+        query.order.push(item);
       });
     }
 

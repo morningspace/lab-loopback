@@ -1,0 +1,212 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <title>Nodejs应用开发新秀 —— 深入浅出LoopBack</title>
+
+    <link rel="stylesheet" href="css/reveal.css">
+    <link rel="stylesheet" href="css/theme/black.css">
+
+    <!-- Theme used for syntax highlighting of code -->
+    <link rel="stylesheet" href="lib/css/zenburn.css">
+
+    <!-- Printing and PDF exports -->
+    <script>
+        var link = document.createElement('link');
+        link.rel = 'stylesheet';
+        link.type = 'text/css';
+        link.href = window.location.search.match(/print-pdf/gi) ? 'css/print/pdf.css' : 'css/print/paper.css';
+        document.getElementsByTagName('head')[0].appendChild(link);
+    </script>
+</head>
+
+<body>
+    <div class="reveal">
+        <div class="slides">
+            <section>
+                <section data-markdown>
+                    ## 第四幕
+                    ### 缤纷多彩的数据源
+                    #### —— 打开LoopBack的数据之窗
+                    主讲人：杨艺峰
+
+                    2018年4月
+                </section>
+                <section>
+                    <h2> 我是谁？</h2>
+                    <img style="border:0;float:left;width:3.5em;margin:5px 20px 0 0" src="images/speaker-4.png">
+                    <p style='text-align:left'>杨艺峰，IBM软件开发工程师，现任职于IBM社交应用产品IBM Connections开发部门。目前，从事SmartCloud运维和docsnext的开发工作。
+                </section>
+                <section data-markdown>
+                    ## 我们将了解到什么？
+                    * 如何对数据进行操作？
+                    * 什么是数据源和连接器？
+                    * 如何有效利用数据源？
+                </section>
+            </section>
+            <section>
+                <section data-markdown>
+                  ## 如何对数据进行操作？
+                </section>
+                <section data-markdown>
+                  ## LoopBack标准数据处理方式
+                  * 所有绑定数据源的LoopBack Model都自动具备继承自PersistedModel的标准数据访问接口
+
+|操作		|REST API	|Model API				|对应的SQL操作
+| ----	|:----		|:----						|:----
+|Create	|POST/PUT	|create()等				|INSERT
+|Read		|GET 			|find()等					|SELECT
+|Update	|POST/PUT |updateAll()等		|UPDATE
+|Delete |DELETE		|destroyById()等	|DELETE
+                </section>
+                <section data-markdown>
+                  ## 数据的增删改
+                  * 新增：
+                    * create()
+                    * upsert(), findOrCreate()
+                    * save()
+                  * 修改：
+                    * updateAll()
+                    * updateAttribute(), updateAttributes()
+                    * createUpdates(), bulkUpdate()
+                  * 删除：
+                    * destroyAll()
+                    * destroyById()
+                </section>
+                <section data-markdown>
+                  ## 数据的查询
+                  
+|Model API									|REST API
+| ----											|:----
+|find(filter, cb)						|GET /model?filter...
+|findOne(filter, cb)				|GET /model/findOne?filter...
+|findById(id, [filter,] cb)	|GET /model/id
+                  
+                  
+                        // 一个Model API的例子
+                        SharableTask.find({
+                          where: {sharedWith: 'moying'}, limit: 3
+                        },
+                        function(err, accounts) { /* ... */ });
+
+                </section>
+                <section data-markdown>
+                  ## 使用过滤器进行数据查询
+|过滤器				|数据类型						|描述
+| ----				|:----							|:----
+|fields				|对象，数组，或字符串	|指定返回结果中包含或不包含的字段
+|include			|对象，数组，或字符串	|包含来自关联模型的结果
+|limit				|数值								|限定返回实例的数量
+|order				|字符串							|指定排序规则
+|skip(offset)	|数值								|跳过指定数量的实例
+|where				|对象								|指定搜索条件，类似SQL中的WHERE字句
+                </section>
+                <section data-markdown>
+                  ## 使用过滤器进行数据查询
+                  * 过滤数组对象：利用实现了LoopBack过滤器语法的*loopback-filters*
+                  * 过滤嵌套属性：LoopBack在某些数据库上支持对嵌套属性的过滤，如：mongodb，memory，cloudant
+                </section>
+                <section data-markdown>
+                    ## 演示时间：☑︎ TaskMe
+                </section>
+                <section data-markdown>
+                    ## ☑︎ 任务清单
+                    * 利用*GET /tasks*的filter参数尝试各种过滤器的使用
+                    * 修改Task.getList()，增加各种过滤条件
+                </section>
+            </section>
+            <section>
+                <section data-markdown>
+                  ## 什么是数据源和连接器？
+                </section>
+                <section>
+                  <h2>关于数据源和连接器</h2>
+                  <ul>
+                    <li>数据源代表后端系统，如：数据库，外部REST服务等</li>
+                    <li>连接器通过数据库驱动或其他外部API实现数据交换</li>
+                    <li>LoopBack支持各种数据源，包括：NoSQL数据库，关系数据库，其他非数据库类型的数据源，以及自定义数据源
+                  </ul>
+                  <img style="background-color:#fff" src="images/loopback-datasource.png" />
+                </section>
+                <section data-markdown>
+                    ## 演示时间：☑︎ TaskMe
+                </section>
+                <section data-markdown>
+                    ## ☑︎ 任务清单
+                    * 为TaskMe增加一个mongodb的数据源
+                </section>
+            </section>
+            <section>
+                <section data-markdown>
+                  ## 如何有效利用数据源？
+                </section>
+                <section data-markdown>
+                  ## 某些典型使用场景
+                  * 根据Model创建数据库的schema
+                    * auto-migrate
+                    * auto-update
+                  * 通过connector直接操作数据库
+                  * 根据实际需求选择不同类型的connector，如：
+                    * REST connector用于远程REST API调用
+                    * Elasticsearch connector用于对Elasticsearch进行访问
+                    * ...
+                </section>
+                <section data-markdown>
+                  ## 各种丰富的connector支持
+                  * 数据库: memory, Cassandra, Cloudant, DashDB, DB2, Informix, MongoDB, MySQL, Oracle, PostgreSQL, Redis, SQL Server, SQLite3
+                  * 非数据库: Email, JSON RPC, MQ Light, Push, REST, SOAP, Storage
+                  * 社区贡献: CouchDB, Kafka, ArangoDB, Couchbase, Elasticsearch, Fabric Composer, Firebase Firestore, Mandrill, Neo4j, RavenDB, RethinkDB, Riak, SAP HANA, SQLite, Twilio
+                </section>
+                <section data-markdown>
+                    ## 演示时间：☑︎ TaskMe
+                </section>
+                <section data-markdown>
+                    ## ☑︎ 任务清单
+                    * 在boot script里，利用auto-update为mongodb增加新的index
+                    * 通过直接操作connector，为Task增加针对title属性的全文搜索功能
+                </section>
+            </section>
+            <section>
+                <section data-markdown>
+                    ## 敬请期待
+                    ### 下一幕精彩内容 ☻
+                </section>
+            </section>
+        </div>
+    </div>
+
+    <script src="lib/js/head.min.js"></script>
+    <script src="js/reveal.js"></script>
+
+    <script>
+        // More info https://github.com/hakimel/reveal.js#configuration
+        Reveal.initialize({
+            history: true,
+            transition: 'convex',
+
+            // More info https://github.com/hakimel/reveal.js#dependencies
+            dependencies: [{
+                src: 'plugin/markdown/marked.js'
+            }, {
+                src: 'plugin/markdown/markdown.js'
+            }, {
+                src: 'plugin/notes/notes.js',
+                async: true
+            }, {
+                src: 'plugin/highlight/highlight.js',
+                async: true,
+                callback: function() {
+                    hljs.initHighlightingOnLoad();
+                }
+            }, {
+                src: 'plugin/zoom-js/zoom.js',
+                async: true
+            }]
+        });
+    </script>
+</body>
+
+</html>

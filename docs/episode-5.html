@@ -1,0 +1,272 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <title>Nodejs应用开发新秀 —— 深入浅出LoopBack</title>
+
+    <link rel="stylesheet" href="css/reveal.css">
+    <link rel="stylesheet" href="css/theme/black.css">
+
+    <!-- Theme used for syntax highlighting of code -->
+    <link rel="stylesheet" href="lib/css/zenburn.css">
+
+    <!-- Printing and PDF exports -->
+    <script>
+        var link = document.createElement('link');
+        link.rel = 'stylesheet';
+        link.type = 'text/css';
+        link.href = window.location.search.match(/print-pdf/gi) ? 'css/print/pdf.css' : 'css/print/paper.css';
+        document.getElementsByTagName('head')[0].appendChild(link);
+    </script>
+</head>
+
+<body>
+    <div class="reveal">
+        <div class="slides">
+            <section>
+                <section data-markdown>
+                    ## 第五幕
+                    ### 源自实践的经验谈
+                    #### —— 深入LoopBack的方方面面
+                    主讲人：莫映
+
+                    2018年4月
+                </section>
+                <section>
+                    <h2> 我是谁？</h2>
+                    <img style="border:0;float:left;width:4em;margin:5px 20px 0 0" src="images/speaker-1.png">
+                    <p style='text-align:left'>莫映，混迹IT圈，蹉跎十余载，如今依旧摸爬滚打于程序员一线的一名普通老兵。虽自觉资质愚钝，却向往程序人生。闲暇之余，偶有技术写译。拙笔译作见诸于市者，如：Manning的《相关性搜索》，O’Rielly的《集体智慧编程》与《EJB 3.0》等。
+                    目前，忝为IBM社交应用产品IBM Connections的中国区Lead Developer。2016年开始接触LoopBack，并将其应用于产品开发。愿为优秀开源技术在国内技术社区的推广略尽绵薄之力。
+                </section>
+                <section data-markdown>
+                    ## 我们将了解到什么？
+                    * LoopBack使用的高阶议题，例如：
+                      * 如何进行单元测试？
+                      * 如何实现异步处理？
+                      * 如何针对事件编程？
+                      * 如何动态定义LoopBack对象？
+                </section>
+            </section>
+            <section>
+                <section data-markdown>
+                    ## 如何进行单元测试？
+                </section>
+                <section data-markdown>
+                    ## 我们将
+                    * 针对Model的方法进行测试
+                    * 针对REST API进行测试
+                    * 针对特定数据库的测试
+
+                    （详见后面的“演示时间：☑︎ TaskMe”）
+                </section>
+            </section>
+            <section>
+                <section data-markdown>
+                    ## 如何编写异步代码？
+                </section>
+                <section data-markdown>
+                    ## 基于Promise
+                    * 一个Promise对象代表了一个异步操作的结果
+                    * 具备如下几种状态：
+                      * pending，初始状态
+                      * fulfilled，异步操作成功，处于pending阶段的回调函数被触发
+                      * rejected，异步操作失败，错误处理回调被触发
+                      * settled，表示fulfilled或rejected
+                </section>
+                <section data-markdown>
+                    ## LoopBack对Promise的支持
+                    使用Promise前，传统的异步回调函数
+
+
+                          MyModel.find((err, result) => {
+                          });
+                    使用Promise后，利用链式的then/catch
+
+
+                          MyModel.find()
+                          .then(function(result){
+                            // called if the operation succeeds.
+                          })
+                          .catch(function(err){
+                            // called if the operation encounters an error.
+                          });
+                </section>
+                <section data-markdown>
+                    ## 基于回调函数的例子
+
+                          // test data
+                          const TASK = { title: 'foo', description: 'bar' };
+
+                          /* nested operations */
+                          Task.create(TASK, (err, res) => {
+                            taskId = res.id;
+                            Task.getList('undone', () => {
+                              Task.upsert({id: taskId, description: 'updated bar'}, () => {
+                                // do something
+                                Task.destroyById(taskId, () => {
+                                  // do something
+                                });
+                              });
+                            });
+                          });
+                </section>
+                <section data-markdown>
+                    ## 基于Promise的例子
+
+                          // test data
+                          const TASK = { title: 'foo', description: 'bar' };
+
+                          /* chained operations */
+                          Task.create(TASK)
+                          .then((res) => { taskId = res.id; })
+                          .then(() => Task.getList('undone'))
+                          .then(() => Task.upsert({id: taskId, description: 'updated bar'}))
+                          .then(() => Task.destroyById(taskId));
+                </section>
+                <section data-markdown>
+                    ## 用async/await改写后的样子
+
+                          // test data
+                          const TASK = { title: 'foo', description: 'bar' };
+
+                          /* listed operations */
+                          const runIt = async () => {
+                            let res = await Task.create(TASK);
+                            const taskId = res.id;
+                            res = await Task.getList('undone');
+                            res = await Task.upsert({id: taskId, description: 'updated bar'});
+                            res = await Task.destroyById(taskId);
+                          };
+                          runIt();
+                </section>
+            </section>
+            <section>
+                <section data-markdown>
+                    ## 如何实现事件编程？
+                </section>
+                <section data-markdown>
+                    ## LoopBack的事件处理
+                    * LoopBack的app对象是一个Node EventEmitter
+                    * 可以直接在app上调用emit()和on()
+                    * 除支持标准的Node事件机制外，LoopBack的app对象和Model还支持一些特定事件，例如：
+                      * app在初始化阶段会发出booted和started等事件；
+                      * Model实例在被成功创建/保存/更新时会发出changed事件；
+                      * Model实例在被成功删除时会发出deleted事件；
+                </section>
+                <section data-markdown>
+                    ## 事件处理的例子
+                    定义事件响应函数，以响应app的booted事件
+
+
+                          const app = require('../src/server/server');
+
+                          app.on('booted', () => {
+                            /* do something after Loopback app is booted */
+                          });
+                    定义事件响应函数，响应Model的changed事件
+
+
+                          MyModel.on('changed', function(inst) {
+                            console.log('model with id %s has been changed', inst.id);
+                          });
+                </section>
+            </section>
+            <section>
+                <section data-markdown>
+                    ## 如何动态定义LoopBack对象？
+                </section>
+                <section data-markdown>
+                    ## 动态定义数据源的例子
+
+                        // create data source dynamically
+                        const app = require('../src/server/server');
+                        const dataSource = app.loopback.createDataSource('db', {
+                          "name": "db",
+                          "database": "taskme",
+                          "connector": "mongodb",
+                        });
+
+                        // attach to model
+                        const Task = app.models.Task;
+                        Task.attachTo(dataSource);
+                </section>
+                <section data-markdown>
+                    ## 动态定义Model的例子
+                    调用app.registry的createModel方法
+
+
+                          // require task.json
+                          // ...
+                          const Task = app.registry.createModel(json);
+                          // require and run task.js
+                          // ...
+                          app.model(Task, { dataSource: 'db' });
+                    调用DataSource的createModel方法
+
+
+                          const Task = dataSource.createModel('Task', {
+                            title: {'type': String, 'required': true},
+                            description: String,
+                            state: {'type': Number, 'default': 0}
+                          }, options);
+                          app.model(Task);
+                </section>
+            </section>
+            <section>
+                <section data-markdown>
+                    ## 演示时间：☑︎ TaskMe
+                </section>
+                <section data-markdown>
+                    ## ☑︎ 任务清单
+                    * 为TaskMe增加基于Jasmine的单元测试逻辑，分别测试：
+                      * TaskMe的Model方法
+                      * TaskMe的REST API接口
+                      * 基于MongoDB的search逻辑
+                    * 增加测试覆盖（istanbul）
+                    * 增加代码静态检查(eslint)
+                </section>
+            </section>
+            <section>
+                <section data-markdown>
+                    ## 敬请期待
+                    ### 下一幕精彩内容 ☻
+                </section>
+            </section>
+        </div>
+    </div>
+
+    <script src="lib/js/head.min.js"></script>
+    <script src="js/reveal.js"></script>
+
+    <script>
+        // More info https://github.com/hakimel/reveal.js#configuration
+        Reveal.initialize({
+            history: true,
+            transition: 'convex',
+
+            // More info https://github.com/hakimel/reveal.js#dependencies
+            dependencies: [{
+                src: 'plugin/markdown/marked.js'
+            }, {
+                src: 'plugin/markdown/markdown.js'
+            }, {
+                src: 'plugin/notes/notes.js',
+                async: true
+            }, {
+                src: 'plugin/highlight/highlight.js',
+                async: true,
+                callback: function() {
+                    hljs.initHighlightingOnLoad();
+                }
+            }, {
+                src: 'plugin/zoom-js/zoom.js',
+                async: true
+            }]
+        });
+    </script>
+</body>
+
+</html>

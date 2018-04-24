@@ -1,0 +1,144 @@
+{
+  "name": "Task",
+  "plural": "tasks",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "mixins": {
+    "Timestamp": true
+  },
+  "properties": {
+    "title": {
+      "type": "string",
+      "required": true
+    },
+    "description": {
+      "type": "string"
+    },
+    "state": {
+      "type": "number",
+      "default": 0
+    }
+  },
+  "validations": [],
+  "relations": {
+    "notes": {
+      "type": "hasMany",
+      "model": "Note",
+      "foreignKey": "taskId"
+    }
+  },
+  "acls": [],
+  "methods": {
+    "getList": {
+      "accepts": [
+        {
+          "arg": "state",
+          "type": "string",
+          "required": false,
+          "description": "State of task. Valid value can be 'undone' or 'done'.",
+          "http": {
+            "source": "path"
+          }
+        },
+        {
+          "arg": "page",
+          "type": "integer",
+          "required": false,
+          "description": "Current page number.",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "pageSize",
+          "type": "integer",
+          "required": false,
+          "description": "Number of tasks per page.",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "order",
+          "type": "string",
+          "required": false,
+          "description": [
+            "Sort by specified fields, separated by comma, ",
+            "e.g. order=\"title desc,description asc\"."
+          ],
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "fields",
+          "type": "string",
+          "required": false,
+          "description": [
+            "Fields to be displayed, separated by comma, ",
+            "e.g. fields=\"title,description\"."
+          ],
+          "http": {
+            "source": "query"
+          }
+        }
+      ],
+      "returns": [
+        {
+          "arg": "tasks",
+          "type": "[Task]",
+          "root": true,
+          "description": "A list of tasks."
+        }
+      ],
+      "description": "Get a list of tasks.",
+      "http": [
+        {
+          "path": "/:state",
+          "verb": "get"
+        }
+      ]
+    },
+    "search": {
+      "accepts": [
+        {
+          "arg": "q",
+          "type": "string",
+          "required": false,
+          "description": "The keyword to be searched.",
+          "http": {
+            "source": "query"
+          }
+        }
+      ],
+      "returns": [
+        {
+          "arg": "tasks",
+          "type": "[Task]",
+          "root": true,
+          "description": "A list of tasks."
+        }
+      ],
+      "description": "Search a list of tasks.",
+      "http": [
+        {
+          "path": "/search",
+          "verb": "get"
+        }
+      ]
+    }
+  },
+  "mongodb": {
+    "collection": "tasks"
+  },
+  "indexes": {
+    "idx_title_fulltext": {
+      "keys": {
+        "title": "text"
+      }
+    }
+  }
+}

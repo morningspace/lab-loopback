@@ -1,0 +1,7 @@
+{
+  "db": {
+    "name": "db",
+    "database": "taskme",
+    "connector": "mongodb"
+  }
+}

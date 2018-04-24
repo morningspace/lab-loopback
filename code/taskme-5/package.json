@@ -1,0 +1,46 @@
+{
+  "name": "taskme",
+  "version": "1.0.0",
+  "main": "src/server/server.js",
+  "engines": {
+    "node": ">=4"
+  },
+  "scripts": {
+    "lint": "eslint .",
+    "lint-fix": "eslint --fix --ext .js src tests",
+    "start": "node .",
+    "start-prod": "cross-env NODE_ENV=production node .",
+    "test": "istanbul cover tests/jasmine-runner.js && istanbul report cobertura",
+    "test-debug": "node debug tests/jasmine-runner.js",
+    "posttest": "npm run lint && nsp check"
+  },
+  "dependencies": {
+    "compression": "^1.0.3",
+    "cors": "^2.5.2",
+    "cross-env": "5.0.5",
+    "helmet": "3.8.2",
+    "loopback": "^3.0.0",
+    "loopback-boot": "^2.6.5",
+    "loopback-component-explorer": "^4.0.0",
+    "loopback-connector-mongodb": "^1.18.1",
+    "serve-favicon": "^2.0.1",
+    "strong-error-handler": "^2.0.0"
+  },
+  "devDependencies": {
+    "eslint": "^3.17.1",
+    "eslint-config-loopback": "^8.0.0",
+    "eslint-config-airbnb-base": "^10.0.1",
+    "eslint-plugin-import": "^2.2.0",
+    "istanbul": "^1.0.0-alpha.2",
+    "jasmine": "^2.8.0",
+    "jasmine-reporters": "^2.2.0",
+    "nsp": "^2.1.0",
+    "supertest": "^2.0.1"
+  },
+  "repository": {
+    "type": "",
+    "url": ""
+  },
+  "license": "UNLICENSED",
+  "description": "taskme"
+}

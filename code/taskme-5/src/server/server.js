@@ -3,7 +3,7 @@ const boot = require('loopback-boot');
 
 const app = module.exports = loopback();
 
-app.start = function () {
+app.start = function start() {
   // start the web server
   return app.listen(() => {
     app.emit('started');

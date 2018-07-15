@@ -1,0 +1,746 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <title>Nodejs应用开发新秀 —— 深入浅出LoopBack</title>
+
+    <link rel="stylesheet" href="css/reveal.css">
+    <link rel="stylesheet" href="css/theme/black.css">
+
+    <!-- Theme used for syntax highlighting of code -->
+    <link rel="stylesheet" href="lib/css/zenburn.css">
+
+    <!-- Printing and PDF exports -->
+    <script>
+        var link = document.createElement('link');
+        link.rel = 'stylesheet';
+        link.type = 'text/css';
+        link.href = window.location.search.match(/print-pdf/gi) ? 'css/print/pdf.css' : 'css/print/paper.css';
+        document.getElementsByTagName('head')[0].appendChild(link);
+    </script>
+</head>
+
+<body>
+    <div class="reveal">
+        <div class="slides">
+            <section>
+                <section data-markdown>
+                  ## LoopBack线下实践课程
+
+                  2018年7月21日
+                </section>
+                <section data-markdown>
+                  ### 关于本实践课程
+                  * [《深入浅出LoopBack》](https://morningspace.github.io/understanding-loopback/)系列讲座的配套实践课程
+                  * 以动手实践为主，辅以理论与概念的串讲
+                  * 以实现完整的 ☑︎ TaskMe实验项目为目标，分阶段完成不同任务
+                </section>
+                <section data-markdown>
+                  ### 关于☑︎ TaskMe
+                  * 一个管理个人任务的应用
+                  * 支持任务的定义，修改，和删除等功能
+                  * 麻雀虽小五脏俱全
+                </section>
+                <section data-markdown>
+                  ### 通过本实践课程，您将了解到：
+                  * LoopBack安装及框架代码生成
+                  * 驾驭Model：定义，验证，关联
+                  * 业务逻辑扩展：
+                    * Remote Method
+                    * Mixin
+                    * Middleware
+                    * Boot Script
+                  * 数据访问：过滤器，数据源，连接器
+                  * 完整项目：单元测试，测试覆盖，代码检查
+                  * 将程序发布到API Connect
+                </section>
+                <section data-markdown>
+                  ### 对本实践课程的学习建议
+                  * 为节省时间，包括软件安装在内的准备工作建议在课程正式开始之前提前完成
+                  * 本讲义同时适用LoopBack及API Connect，讲义中每步标题后明确标注LoopBack CLI或API Connect，表示该步骤在两种情况下执行方法有别
+                  * 老师按讲义所列次序分步骤讲解，每一步讲解结束后学员开始手工实践，过半学员完成当前步骤后，老师继续下一步讲解
+                  * 学员实践遇到问题时，可寻求场内老师的帮助
+                  * 未及时完成当前步骤实践的学员，可参考[GitHub](https://github.com/morningspace/understanding-loopback/tree/master/code)上当前步骤对应的样例代码，位于/code/taskme-n下，n代表第几步，如：taskme-1
+                </section>
+            </section>
+            <section>
+                <section data-markdown>
+                  ### ☑︎ TaskMe: Step 0
+                  ### 准备工作
+                </section>
+                <section data-markdown>
+                  ### 任务列表
+                  包括环境准备，软件安装，及样例代码下载。
+                  * 安装[node.js和npm](https://nodejs.org/en/download/)
+                  * 安装[LoopBack](https://loopback.io/doc/en/lb3/Installation.html)
+                    * LoopBack CLI，或
+                    * IBM API Connect Developer Toolkit（可选）
+                  * 安装[Git客户端](https://git-scm.com/downloads/guis)（可选）
+                  * 安装[VS Code](https://code.visualstudio.com/)或其他任何一款代码编辑器（可选）
+                  * 下载[本课程讲义及 ☑︎ TaskMe源代码](https://github.com/morningspace/understanding-loopback)
+
+                  注：为节省时间，建议开课前完成上述准备工作
+                </section>
+                <section data-markdown>
+                  ### 安装LoopBack
+                  有两种安装选择，后者支持将项目发布到IBM Cloud
+                  * LoopBack CLI，或
+                  * IBM API Connect Developer Toolkit
+
+
+                        # install loopback-cli
+                        $ npm install -g loopback-cli
+                        # display the version
+                        $ lb -v
+
+                        # install api connect dev toolkit
+                        $ npm install -g apiconnect
+                        # display the version
+                        $ apic -v
+                </section>
+            </section>
+            <section>
+                <section data-markdown>
+                  ### ☑︎ TaskMe: Step 1
+                  ### 生成框架代码并执行
+                </section>
+                <section data-markdown>
+                  ### 任务列表
+                  * 生成应用框架代码
+                  * 运行应用程序
+                  * 学习使用API Explorer
+                </section>
+                <section data-markdown>
+                  ### 生成应用框架代码(LoopBack CLI)
+                  在命令行执行lb，并回答一系列问题，参考如下
+                  ![](images/ws/lb-create.png)
+                </section>
+                <section data-markdown>
+                  ### 生成应用框架代码(LoopBack CLI)
+                  看到如下结果，表示代码生成完毕
+                  ![](images/ws/lb-create-2.png)
+                </section>
+                <section data-markdown>
+                  ### 生成应用框架代码(API Connect)
+                  在命令行执行apic，并回答一系列问题，参考如下
+                  ![](images/ws/apic-create.png)
+                </section>
+                <section data-markdown>
+                  ### 生成应用框架代码(API Connect)
+                  看到如下结果，表示代码生成完毕
+                  ![](images/ws/apic-create-2.png)
+                </section>
+                <section data-markdown>
+                  ### 运行应用程序
+                  在taskme根目录下执行如下命令启动程序
+                        # LoopBack CLI
+                        $ node .
+                        Web server listening at : http://localhost:3000
+                        Browse your REST API at http://localhost:3000/explorer
+
+                        # API Connect
+                        $ apic start
+                        Service taskme started on port 4001.
+                        Access the application dashboard at http://...:4001/appmetrics-dash
+                        Service taskme-gw started on port 4002.
+                </section>
+                <section data-markdown>
+                  ### 学习使用API Explorer(LoopBack CLI)
+                  在浏览器中打开http://localhost:3000/explorer ，如下
+                  ![](images/ws/lb-explorer.jpg)
+                </section>
+                <section data-markdown>
+                  ### 学习使用API Explorer(API Connect)
+                  在taskme根目录下执行：apic edit，以打开浏览器如下
+                  ![](images/ws/apic-edit.jpg)
+                </section>
+                <section data-markdown>
+                  ### 学习使用API Explorer(API Connect)
+                  点击Explore链接进入API Explorer界面
+                  ![](images/ws/apic-explorer.jpg)
+                  注：或直接在命令行输入apic explore，但要注意API定义中的Host取值不能为$(catalog.host)
+                </section>
+            </section>
+            <section>
+                <section data-markdown>
+                  ### ☑︎ TaskMe: Step 2.1
+                  ### Model的定义
+                </section>
+                <section data-markdown>
+                  ### 任务列表
+                  * 添加In Memory数据源
+                  * 添加Task Model
+                  * 只为Task暴露期望的REST API
+                  * 添加Note Model
+                </section>
+                <section data-markdown>
+                  ### 添加In Memory数据源(LoopBack CLI)
+                  在命令行执行lb，并回答一系列问题，参考如下
+                  ![](images/ws/lb-ds-create.jpg)
+                </section>
+                <section data-markdown>
+                  ### 添加In Memory数据源(API Connect)
+                  在命令行执行apic，并回答一系列问题，参考如下
+                  ![](images/ws/apic-ds-create.jpg)
+                </section>
+                <section data-markdown>
+                  ### 添加Task Model(LoopBack CLI)
+                  在命令行执行lb，并回答一系列问题，参考如下
+                  ![](images/ws/lb-model-create.jpg)
+                </section>
+                <section data-markdown>
+                  ### 添加Task Model(API Connect)
+                  在命令行执行apic，并回答一系列问题，参考如下
+                  ![](images/ws/apic-model-create.jpg)
+                </section>
+                <section data-markdown>
+                  ### 只为Task暴露期望的API(LoopBack CLI)
+                  修改server/model-config.json，为Task定义如下
+
+                        "Task": {
+                          "dataSource": "db", "public": true,
+                          "options": {
+                            "remoting": {
+                              "sharedMethods": {
+                                "*": false,
+                                "create": true,
+                                "find": true,
+                                "prototype.patchAttributes": true,
+                                "deleteById": true
+                              }
+                            }
+                          }
+                        }
+                </section>
+                <section data-markdown>
+                  ### 添加Note Model(LoopBack CLI)
+                  在命令行执行lb，并回答一系列问题，参考如下
+                  ![](images/ws/lb-model2-create.jpg)
+                </section>
+                <section data-markdown>
+                  ### 添加Note Model(API Connect)
+                  在命令行执行apic，并回答一系列问题，参考如下
+                  ![](images/ws/apic-model2-create.jpg)
+                </section>
+            </section>
+            <section>
+                <section data-markdown>
+                    ### ☑︎ TaskMe: Step 2.2
+                    ### Model的定制
+                </section>
+                <section data-markdown>
+                    ### 任务列表
+                    * 修改Task的定义，为Task增加state属性
+                    * 添加SharableTask Model，令其派生自Task
+                    * 为Task增加业务逻辑，在保存之前将title属性转成大写
+                </section>
+                <section data-markdown>
+                  ### 修改Task的定义
+                  修改common/models/task.json，为Task增加state属性
+                      
+                        // In task.json
+                        ...
+                        "properties": {
+                          ...
+                          "state": {
+                            "type": "number",
+                            "default": 0
+                          }
+                        }
+                </section>
+                <section data-markdown>
+                  ### 添加SharableTask Model(LoopBack CLI)
+                  在命令行执行lb，并回答一系列问题，参考如下
+                  ![](images/ws/lb-model3-create.jpg)
+                </section>
+                <section data-markdown>
+                  ### 添加SharableTask Model(API Connect)
+                  在命令行执行apic，并回答一系列问题，参考如下
+                  ![](images/ws/apic-model3-create.jpg)
+                </section>
+                <section data-markdown>
+                  ### 为Task增加业务逻辑
+                  修改common/models/task.js，保存前将属性title转成大写
+                        
+                        'use strict';
+
+                        module.exports = function(Task) {
+
+                          Task.observe('before save', function formatTitile(ctx, next) {
+                            const model = ctx.instance ? ctx.instance : ctx.data;
+
+                            if (model.title) {
+                              model.title = model.title.toUpperCase();
+                            }
+
+                            next();
+                          });
+
+                        };
+                </section>
+            </section>
+            <section>
+                <section data-markdown>
+                  ### ☑︎ TaskMe: Step 2.3
+                  ### Model的验证
+                </section>
+                <section data-markdown>
+                  ### 任务列表
+                  * 为Task Model增加验证逻辑
+                    * title属性字符个数介于1和64之间
+                    * state属性取值必须是0或1
+                </section>
+                <section data-markdown>
+                  ### 为Task Model增加验证逻辑
+                    
+                        'use strict';
+
+                        module.exports = function(Task) {
+
+                          Task.validatesLengthOf('title', { min: 1, max: 64});
+                          Task.validatesInclusionOf('state', {
+                            in: [0, 1], message: 'is not allowed'
+                          });
+
+                          ...
+                        };
+                </section>
+            </section>
+            <section>
+                <section data-markdown>
+                  ### ☑︎ TaskMe: Step 2.4
+                  ### Model的关联
+                </section>
+                <section data-markdown>
+                  ### 任务列表
+                  * 为Task Model和Note Model建立关联
+                </section>
+                <section data-markdown>
+                  ### 为Task和Note建立关联(LoopBack CLI)
+                  修改common/models/task.json，如下
+                  
+                        // In task.json
+                        ...
+                        "relations": {
+                          "notes": {
+                            "type": "hasMany",
+                            "model": "Note",
+                            "foreignKey": "taskId"
+                          }
+                        },
+                        ...
+
+                  注：也可使用lb relation命令
+                </section>
+                <section data-markdown>
+                  ### 为Task和Note建立关联(API Connect)
+                  在命令行执行apic，并回答一系列问题，参考如下
+                  ![](images/ws/apic-relation-create.jpg)
+                </section>
+            </section>
+            <section>
+                <section data-markdown>
+                  ### ☑︎ TaskMe: Step 3.1
+                  ### 定义Remote Method
+                </section>
+                <section data-markdown>
+                  ### 任务列表
+                  * 为Task定义remote method：getList()
+                </section>
+                <section data-markdown>
+                  ### 为Task定义getList(LoopBack CLI)
+                  在task.json中增加getList的定义
+                  
+                        "methods": {
+                          "getList": {
+                            "accepts": [{
+                              "arg": "state", "type": "string", "required": false,
+                              "http": { "source": "path" }
+                            }],
+                            "returns": [{
+                              "arg": "tasks", "type": "[Task]", "root": true
+                            }],
+                            "description": "Get a list of tasks.",
+                            "http": [{
+                              "path": "/state/:state", "verb": "get"
+                            }]
+                          }
+                        },
+                        
+                  注：也可使用lb remote-method命令
+                </section>
+                <section data-markdown>
+                  ### 为Task定义getList(API Connect)
+                  ![](images/ws/apic-method-create.jpg)
+                </section>
+                <section data-markdown>
+                  ### 为Task定义getList
+                  在common/models/task.js中增加getList的实现
+                  
+                        module.exports = function(Task) {
+                          ...
+                          /**
+                           * Get a list of tasks.
+                           * @param {string} state State of task.
+                           * @param {Function(Error, array)} callback
+                           */
+                          Task.getList = function(state, callback) {
+                            const query = {
+                              where: {
+                                state: (state === 'done') ? 1 : 0
+                              }
+                            };
+                            Task.find(query, callback);
+                          };
+                        };
+                </section>
+            </section>
+            <section>
+                <section data-markdown>
+                  ### ☑︎ TaskMe: Step 3.2
+                  ### 定义Mixin
+                </section>
+                <section data-markdown>
+                  ### 任务列表
+                  * 为Task定义能自动添加日期类属性的Mixin
+                </section>
+                <section data-markdown>
+                  ### 为Task定义能自动添加日期类属性的Mixin
+                  添加server/mixins/timestamp.js，如下：
+
+                        'use strict';
+
+                        module.exports = function(Model) {
+                          Model.defineProperty('created', {type: Date, defaultFn: 'now'});
+                          Model.defineProperty('modified', {type: Date, defaultFn: 'now'});
+
+                          Model.observe('before save', function event(ctx, next) {
+                            const model = ctx.instance ? ctx.instance : ctx.data;
+                            model.modified = new Date();
+                            next();
+                          });
+                        };
+                </section>
+                <section data-markdown>
+                  ### 为Task定义能自动添加日期类属性的Mixin
+                  修改common/models/task.json，声明如下
+
+                        ...
+                        "mixins": {
+                          "Timestamp": true
+                        }
+                        ...
+                </section>
+            </section>
+            <section>
+                <section data-markdown>
+                  ### ☑︎ TaskMe: Step 3.3
+                  ### 定义Middleware
+                </section>
+                <section data-markdown>
+                  ### 任务列表
+                  * 为Task添加用于模拟认证的Middleware
+                </section>
+                <section data-markdown>
+                  ### 模拟认证的Middleware(LoopBack CLI)
+                  添加server/middlewares/auth.js，如下：
+
+                        'use strict';
+
+                        module.exports = function() {
+                          return function (req, res, next) {
+                            if (req.query && req.query.access_token) {
+                              next();
+                            } else {
+                              res.sendStatus(401);
+                            }
+                          }
+                        };
+                </section>
+                <section data-markdown>
+                  ### 模拟认证的Middleware(LoopBack CLI)
+                  修改server/middleware.json，如下：
+                
+                        ...
+                        "auth": {
+                          "./middlewares/auth": {
+                            "paths": [
+                              "${restApiRoot}"
+                            ]
+                          }
+                        },
+                        ...
+                </section>
+            </section>
+            <section>
+                <section data-markdown>
+                  ### ☑︎ TaskMe: Step 3.4
+                  ### 定义Boot Script
+                </section>
+                <section data-markdown>
+                  ### 任务列表
+                  * 在初始化阶段为Task添加Remote Hook
+                </section>
+                <section data-markdown>
+                  ### 初始化阶段的Remote Hook(LoopBack CLI)
+                  添加server/boot/init-model.js，如下：
+
+                        'use strict';
+
+                        module.exports = function(app) {
+                          const Task = app.models.Task;
+                          Task.afterRemote('getList', function(ctx, unused, next) {
+                            ctx.res.header('X-TaskMe', 'This is a test');
+                            next();
+                          });
+                        };
+                </section>
+            </section>
+            <section>
+                <section data-markdown>
+                  ### ☑︎ TaskMe: Step 4.1
+                  ### 使用过滤条件
+                </section>
+                <section data-markdown>
+                  ### 任务列表
+                  * 修改Task.getList()，增加各种过滤条件
+                </section>
+                <section data-markdown>
+                  ### 修改Task.getList()，增加各种过滤条件
+                  在task.json中修改getList的定义
+                  
+                        "methods": {
+                          "getList": {
+                            "accepts": [{
+                              "arg": "state", "type": "string", "required": false,
+                              "http": { "source": "path" }
+                            },
+                            {
+                              "arg": "page", "type": "integer", "required": false,
+                              "http": { "source": "query" }
+                            },
+                            {
+                              "arg": "pageSize", "type": "integer", "required": false,
+                              "http": { "source": "query" }
+                            },
+                            {
+                              "arg": "order", "type": "string", "required": false,
+                              "http": { "source": "query" }
+                            },
+                            {
+                              "arg": "fields", "type": "string", "required": false,
+                              "http": { "source": "query" }
+                            }],
+                            "returns": [ ... ],
+                            "description": "Get a list of tasks.",
+                            "http": [ ... ]
+                          },
+                </section>
+                <section data-markdown>
+                  ### 修改Task.getList()，增加各种过滤条件
+                  在task.js中修改getList的实现
+                  
+                        Task.getList = function(state, p, ps, order, fields, cb) {
+                          const where = { state: (state === 'done') ? 1 : 0 };
+                          const limit = ps || 100;
+                          const skip = ((p || 1) - 1) * limit;
+                          const query = { where, limit, skip };
+                          if (order) {
+                            query.order = [];
+                            order.split(',').forEach(function(item) {
+                              query.order.push(item);
+                            });
+                          }
+                          if (fields) {
+                            query.fields = {};
+                            fields.split(',').forEach(function(item) {
+                              query.fields[item] = true; 
+                            });
+                          }
+                          Task.find(query, cb) ;
+                        };
+                </section>
+            </section>
+            <section>
+                <section data-markdown>
+                  ### ☑︎ TaskMe: Step 4.2
+                  ### 定义数据源和连接器
+                </section>
+                <section data-markdown>
+                  ### 任务列表
+                  * 为TaskMe增加一个MongoDB的数据源
+                  * 在Boot Script中利用auto-update为MongoDB新加Index
+                  * 直接操作连接器，为Task增加针对title属性的全文搜索
+                </section>
+                <section data-markdown>
+                  ### 添加MongoDB数据源(LoopBack CLI)
+                  添加server/datasources.production.json，如下
+                  
+                        {
+                          "db": {
+                            "name": "db",
+                            "database": "taskme",
+                            "connector": "mongodb"
+                          }
+                        }
+                  
+                  修改package.json，增加script如下
+                  
+                        "scripts": {
+                          ...
+                          "start-prod": "cross-env NODE_ENV=production node .",
+                          ...
+                        }
+                </section>
+                <section data-markdown>
+                  ### 在Boot Script中添加Index(LoopBack CLI)
+                  在server/boot/init-model.js中添加代码如下：
+                  
+                        'use strict';
+
+                        module.exports = function(app) {
+                          ...
+                          app.datasources.db.autoupdate();
+                        };
+                </section>
+                <section data-markdown>
+                  ### 实现title属性的全文搜索(LoopBack CLI)
+                  在common/models/task.js中添加代码如下：
+                  
+                        Task.search = function(q, cb) {
+                          const connector = Task.getDataSource().connector;
+                          const collection = connector.db.collection('tasks');
+                          const query = {
+                            "$text": {
+                              "$search": q,
+                            }
+                          };
+    
+                          return collection.find(query).toArray(function(err, items) {
+                            const tasks = items.map(function(item) {
+                              return new Task(item);
+                            });
+                            cb(err, tasks);
+                          });
+                        }
+                </section>
+            </section>
+            <section>
+                <section data-markdown>
+                  ### ☑︎ TaskMe: Step 5
+                  ### 代码测试，测试覆盖，代码静态检查
+                </section>
+                <section data-markdown>
+                  ### 任务列表
+                  * 为TaskMe增加基于Jasmine的单元测试，分别测试：
+                    * TaskMe的Model方法
+                    * TaskMe的REST API接口
+                    * 基于MongoDB的search逻辑
+                  * 增加测试覆盖(istanbul)
+                  * 增加代码静态检查(eslint)
+                </section>
+                <section data-markdown>
+                  ### 改动说明
+                  * 详见[GitHub源码](https://github.com/morningspace/understanding-loopback/tree/master/code/taskme-5)
+                  * 修改package.json
+                  * 增加.eslintrc, .eslintignore
+                  * 增加.istanbul.yml
+                  * 增加测试代码在tests目录下
+                </section>
+            </section>
+            <section>
+                <section data-markdown>
+                  ### ☑︎ TaskMe: Step 6
+                  ### 将程序发布到API Connect
+                </section>
+                <section data-markdown>
+                  ### 在IBM Cloud上安装API Connect
+                  * 登录[你在IBM Cloud的仪表盘](https://console.bluemix.net)
+                  * 进入Catalog页面，搜索API Connect
+                  * 选择创建API Connect服务到自己的空间
+                  ![](images/ws/ic-provision-apic.png)
+                </section>
+                <section data-markdown>
+                  ### 进入API Connect仪表盘
+                  * 返回仪表盘页面，并点击进入API Connect的仪表盘页面，默认会有一个名为Sandbox的catalog
+                  ![](images/ws/ic-apic-dashboard.png)
+                </section>
+                <section data-markdown>
+                  ### 通过本地apic新建Application
+                  * 用apic edit打开本地API Connect管理页面
+                  * 点击Publish > Add and Manage Targets
+                  * 在Publish对话框中选择Add IBM Bluemix target
+                  * 在Select an organization and catalog对话框中选择正确的Regin，Organization，以及Catalog，如：默认的Sandbox
+                  * 点击下一步后，选择新建一个application，名为：taskme，然后点Save保存
+                </section>
+                <section data-markdown>
+                  ### 通过本地apic发布应用代码
+                  * 再次点击Publish，并选择刚才定义并保存的Catalog+App+Org组合
+                  ![](images/ws/ic-apic-publish.jpg)
+                </section>
+                <section data-markdown>
+                  ### 通过本地apic发布应用代码
+                  * 在Publish对话框中选择Publish application，以及Stage or Publish products，并点Publish开发发布
+                  ![](images/ws/ic-apic-publish-2.jpg)
+                </section>
+                <section data-markdown>
+                  ### 通过本地apic发布应用代码
+                  * 当控制台看到如下日志时，表示应用程序发布成功
+                  ![](images/ws/ic-apic-publish-3.jpg)
+                </section>
+                <section data-markdown>
+                  ### 在IBM Cloud上测试发布后的应用
+                  * 刷新API Connect仪表盘页面可看到刚发布的taskme应用
+                  * 点击Explore，选择Catalog > Sandbox，可打开Explore页面进行测试
+
+                  ![](images/ws/ic-apic-dashboard-2.png)
+                </section>
+                <section data-markdown>
+                  ### 在IBM Cloud上监控发布后的应用
+                  * 回到[你在IBM Cloud的仪表盘](https://console.bluemix.net)可见刚发布的taskme应用
+                  ![](images/ws/ic-apic-dashboard-3.png)
+                </section>
+                <section data-markdown>
+                  ### 在IBM Cloud上监控发布后的应用
+                  * 点击应用进入该应用的仪表盘，可对应用进行实时监控
+                  ![](images/ws/ic-apic-dashboard-4.png)
+                </section>
+            </section>
+        </div>
+    </div>
+
+    <script src="lib/js/head.min.js"></script>
+    <script src="js/reveal.js"></script>
+
+    <script>
+        // More info https://github.com/hakimel/reveal.js#configuration
+        Reveal.initialize({
+            history: true,
+            transition: 'convex',
+
+            // More info https://github.com/hakimel/reveal.js#dependencies
+            dependencies: [{
+                src: 'plugin/markdown/marked.js'
+            }, {
+                src: 'plugin/markdown/markdown.js'
+            }, {
+                src: 'plugin/notes/notes.js',
+                async: true
+            }, {
+                src: 'plugin/highlight/highlight.js',
+                async: true,
+                callback: function() {
+                    hljs.initHighlightingOnLoad();
+                }
+            }, {
+                src: 'plugin/zoom-js/zoom.js',
+                async: true
+            }]
+        });
+    </script>
+</body>
+
+</html>

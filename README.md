@@ -30,4 +30,4 @@ Keywords: LoopBack
 | 5/02	| 第六讲《内幕劲爆的最终章：探索LoopBack的崭新未来》 | [视频](https://v.youku.com/v_show/id_XMzU4MzYxNzg2NA==.html)
 | 7/21	| 实验课《LoopBack线下训练营》 									| [幻灯](https://morningspace.github.io/lab-loopback/workshop.html)
 
-注：2018年3月至5月间，受邀为“开放技术 * IBM微讲堂”设计LoopBack系列课程，并参与主讲了其中部分课。本站点所有资源是为配合该课程而专门设计的，由[晴耕小筑#晴耕实验室](https://morningspace.github.io/lab)出品。
+注：2018年3月至5月间，受邀为“开放技术 * IBM微讲堂”设计LoopBack系列课程，并参与主讲了其中部分课。[本站点](https://github.com/morningspace/lab-loopback)所有资源是为配合该课程而专门设计的，由[晴耕小筑#晴耕实验室](https://morningspace.github.io/lab)出品。
